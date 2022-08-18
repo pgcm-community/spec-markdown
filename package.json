@@ -149,6 +149,9 @@
       "react-app"
     ]
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/pgcm-community/spec-markdown.git"

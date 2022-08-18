@@ -4,16 +4,17 @@
 
 ```shell
 # npm
-npm install spec-markdown
+npm install spec-markdown-editor
+```
 
 # pnpm
-pnpm install spec-markdown
+pnpm install spec-markdown-editor
 ```
 
 例:
 
 ```jsx
-import SpecMarkdown from 'spec-markdown'
+import SpecMarkdown from 'spec-markdown-editor'
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
 
 - [x] 实时预览
 - [x] 同步滚动
+- [ ] 主题
 - [ ] 快捷键
 - [ ] 工具栏
 - [ ] 图片
