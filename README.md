@@ -2,11 +2,11 @@
 
 本质是为了目前在写的 pgcm 社区所写的markdown 编辑器
 
-```javascript
+```shell
 # npm
 npm install spec-markdown
 
-#pnpm
+# pnpm
 pnpm install spec-markdown
 ```
 
@@ -16,11 +16,11 @@ pnpm install spec-markdown
 import SpecMarkdown from 'spec-markdown'
 
 function App() {
-    return {
+    return (
         <>
             <SpecMarkdown />
         </>
-    }
+    )
 }
 ```
 
