@@ -5,7 +5,6 @@
 ```shell
 # npm
 npm install spec-markdown-editor
-```
 
 # pnpm
 pnpm install spec-markdown-editor
