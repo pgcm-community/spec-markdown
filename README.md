@@ -1,6 +1,6 @@
 # Spec-MarkDown
 
-本质是为了目前在写的 pgcm 社区所写的markdown 编辑器
+本质是为了目前在写的 pgcm 社区所写的markdown 编辑器, 仅使用了React
 
 ```shell
 # npm
@@ -33,6 +33,21 @@ function App() {
 - [ ] 工具栏
 - [ ] 图片
 - [ ] 导入/ 导出
+
+## 快捷键
+
+| 按键 | 说明 |
+| ---  | --- |
+| ctrl + b | 加粗 |
+| ctrl + 1~6 | 1~6级标题 |
+| ctrl + l | 链接 |
+| ctrl + i | 斜体 |
+| ctrl + u | 删除线 |
+
+## 补充
+
+欢迎大家提交issue 以及需求, 本人对react 并不是很熟悉, 这也算是个练手的小玩意, Wechat:
+![微信](https://xiaoli-wyy.oss-cn-hongkong.aliyuncs.com/wechat.jpg?x-oss-process=image/resize,h_500)
 
 ## License
 
