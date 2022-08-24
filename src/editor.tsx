@@ -1,13 +1,18 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useReducer } from 'react';
 import './styles/editor.less';
-import markdownIt from 'markdown-it';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'
-import { ModeType, HistoryLink } from './types/config'
-import { getCursorPosition, changeSelectedText } from './utils'
+import md from './components/markdown'
+import { ModeType, HistoryLink, RETRACT, PropType, EditorType } from './types/config'
+import {
+  getCursorPosition,
+  changeSelectedText,
+  setSelectionRange,
+  addTitle,
+  selection,
+  addLink
+} from './utils'
 
-
-let scrolling: 0 | 1 | 2 = 0  // 0: none; 1: 编辑区主动触发滚动; 2: 展示区主动触发滚动
+// 0: none; 1: 编辑区主动触发滚动; 2: 展示区主动触发滚动
+let scrolling: 0 | 1 | 2 = 0
 let scrollTimer: string | number | NodeJS.Timeout | undefined;
 let historyLink: HistoryLink = {
   value: '',
@@ -17,22 +22,29 @@ let historyLink: HistoryLink = {
   selectionEnd: 0
 }
 
-const md:any = new markdownIt({
-  breaks: true,
-  highlight: function (code, language) {
-    if (language && hljs.getLanguage(language)) {
-      try {
-        return `<pre><code class="hljs language-${language}>` +
-          hljs.highlight(code, { language }).value +
-          '</code></pre>'
-      } catch (__) {}
-    }
-    return '<pre class="hljs"><code>' + md.utils.escapeHtml(code) + '</code></pre>'
-  }
-})
+type RenderType = (
+  state: EditorType,
+  { type, payload }: { type: string, payload?: any }
+) => EditorType
 
+const render: RenderType = (state, { type, payload }) => {
+  return state
+}
 
-export default function MarkdownEditor() {
+const MarkdownEditor: React.FC<PropType> = (props) => {
+  const {
+    mode = ModeType.NORMAL,
+  } = props
+
+  const [state, dispatch] = useReducer<RenderType, EditorType>(
+    render,
+    {
+      htmlString: '',
+      mode,
+    },
+    (initState: EditorType) => initState
+  )
+
   const [htmlString, setHtmlString] = useState('')
   const [text, setText] = useState('')
 
@@ -40,8 +52,10 @@ export default function MarkdownEditor() {
   const show = useRef<any>(null)
 
   const handleScroll = (block: number, event:any) => {
+    if (state.mode !== ModeType.NORMAL) return
+
     let { scrollHeight, scrollTop, clientHeight } = event.target
-    let scale = scrollTop / (scrollHeight - clientHeight)  // 改进后的计算滚动比例的方法
+    let scale = scrollTop / (scrollHeight - clientHeight)
 
     if(block === 1) {
         if(scrolling === 0) scrolling = 1;  
@@ -78,43 +92,130 @@ export default function MarkdownEditor() {
     let editEl = edit.current
     let { selectionStart, selectionEnd } = getCursorPosition(e)
 
+    const sele = selection(e, text)
+
     // ctrl
     if(metaKey || ctrlKey) {
+      // 撤回
       if (keyCode === 90) {
         if(!historyLink.pre) return
         else {
           let { value, selectionStart, selectionEnd } = historyLink.pre
           setText(value)
           historyLink = historyLink.pre
+          setSelectionRange(e, selectionStart, selectionEnd)
         }
         e.preventDefault()
       }
-    }    
+      // 前进
+      else if (keyCode === 89) {
+        if(!historyLink.next) return
+        else {
+          let { value, selectionStart, selectionEnd } = historyLink.next
+          setText(value)
+          historyLink = historyLink.next
+          setSelectionRange(e, selectionStart, selectionEnd)
+        }
+        e.preventDefault()
+      }
+      // 加粗 ctrl + b
+      else if (keyCode === 66) {
+        changeSelectedText(edit.current, text, setText, '**')
+        e.preventDefault()
+      }
+      // 斜体 ctrl + i
+      else if (keyCode === 73) {
+        changeSelectedText(edit.current, text, setText, '*')
+        e.preventDefault()
+      }
+      // 删除线 ctrl + u
+      else if (keyCode === 85) {
+        changeSelectedText(edit.current, text, setText, '~~')
+        e.preventDefault()
+      }
+      // 链接 ctrl + l
+      else if (keyCode === 76) {
+        addLink(edit.current, text, setText)
+        e.preventDefault()
+      }
+      // 一级标题 ctrl + 1 
+      else if (keyCode === 49) {
+        addTitle(edit.current, text, setText, '#')
+        e.preventDefault()
+      }
+      // 二级标题 ctrl + 2
+      else if (keyCode === 50) {
+        addTitle(edit.current, text, setText, '##')
+        e.preventDefault()
+      }
+      // 三级标题 ctrl + 3
+      else if (keyCode === 51) {
+        addTitle(edit.current, text, setText, '###')
+        e.preventDefault()
+      }
+      // 四级标题 ctrl + 4
+      else if (keyCode === 52) {
+        addTitle(edit.current, text, setText, '####')
+        e.preventDefault()
+      }
+      // 五级标题 ctrl + 5
+      else if (keyCode === 53) {
+        addTitle(edit.current, text, setText, '#####')
+        e.preventDefault()
+      }
+      // 六级标题 ctrl + 6
+      else if (keyCode === 54) {
+        addTitle(edit.current, text, setText, '######')
+        e.preventDefault()
+      }
+    } else { // 只按一个键， 如：tab
+      if(keyCode ===9) {
+        let start = selectionStart
+        let end = selectionEnd,
+            result: string = ''
+
+        // 没有选择文字
+        if (start === end) {
+          result = sele.start + '  '.repeat(RETRACT) + sele.end
+          start += RETRACT
+          end += RETRACT
+        }
+
+        setText(result)
+        setSelectionRange(e, start, end)
+        e.preventDefault()
+      }
+    } 
   })
 
   return (
     <div className="App">
       <div className="markdown-main">
-        <header>
-          {/* <button onClick={(e) => changeSelectedText(edit.current, text, setText, '**', '加粗字体')}>加粗</button> */}
-        </header>
         <main className="content-body">
-          <textarea
-            ref={edit}
-            className="md_textarea"
-            onScroll={(e) => handleScroll(1, e)}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDownCapture={keyUP}
-            value={text}
-          ></textarea>
-          <div
-            ref={show}
-            id="write"
-            onScroll={(e) => handleScroll(2, e)}
-            dangerouslySetInnerHTML={{ __html: htmlString }}
-          ></div>
+          {
+            (state.mode === ModeType.NORMAL || state.mode === ModeType.EDIT) &&
+            <textarea
+              ref={edit}
+              className="md_textarea"
+              onScroll={(e) => handleScroll(1, e)}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDownCapture={keyUP}
+              value={text}
+            />
+          }
+          {
+            state.mode !== ModeType.EDIT &&
+            <div
+              ref={show}
+              id="write"
+              onScroll={(e) => handleScroll(2, e)}
+              dangerouslySetInnerHTML={{ __html: htmlString }}
+            ></div>
+          }
         </main>  
       </div>    
     </div>
   );
 }
+
+export default MarkdownEditor;

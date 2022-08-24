@@ -9,7 +9,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <MarkdownEditor></MarkdownEditor>
+  <MarkdownEditor />
 );
 
 // If you want to start measuring performance in your app, pass a function
