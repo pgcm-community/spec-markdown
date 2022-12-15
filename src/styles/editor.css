@@ -1,13 +1,10 @@
-.App {
-  .markdown-main {
+.App .markdown-main {
     height: 100%;
-    
-    .content-body {
-      width: 100%;
-      height: calc(100% - 50px);
-      display: flex;
-    } 
-  }
+}
+.App .markdown-main .content-body {
+  width: 100%;
+  height: calc(100% - 50px);
+  display: flex;
 }
 
 .md_textarea {
@@ -19,10 +16,10 @@
   overflow: auto;
   box-sizing: border-box;
   background-color: rgb(248, 248, 250);
-  resize: none;
   outline: none;
   border: none;
-  font-size: 15px;
+  font-size: 18px;
+  font-weight: 500;
   color: #232323;
   line-height: 24px;
 }
@@ -33,4 +30,5 @@
   padding: 20px 20px 40px 20px;
   overflow: auto;
   box-sizing: border-box;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }

@@ -2,10 +2,13 @@
 .vscode
 
 /dist/*
+/build/*
 .locals
 /.output/*
 .output.js
 /node_modules/**
+
+/config/*
 
 **/*.svg
 **/*.sh

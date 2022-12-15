@@ -1,18 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './styles/index.css';
-import MarkdownEditor from './editor';
-import reportWebVitals from './reportWebVitals';
+import React from 'react'
+import ReactDOM from "react-dom/client";
+import './styles/index.css'
+import MarkdownEditor from './editor'
+import { ModeType } from "./types/config";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+function render(props) {
+  const { container } = props;
+  const root = ReactDOM.createRoot(container ? container.querySelector('#root') : document.querySelector('#root'))
 
-root.render(
-  <MarkdownEditor />
-);
+  root.render(
+    <MarkdownEditor mode={ModeType.NORMAL} />
+  );
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+render({});
