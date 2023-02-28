@@ -47,7 +47,7 @@ const MarkdownEditor: React.FC<PropType> = (props) => {
 
   const {
     text,
-    mode = ModeType.NORMAL,
+    mode = 'normal',
   } = props
 
   const [state, dispatch] = useReducer<RenderType, EditorType>(
@@ -65,7 +65,7 @@ const MarkdownEditor: React.FC<PropType> = (props) => {
 
   // 同步滚动
   const handleScroll = useCallback((event: any) => {
-    if (state.mode !== ModeType.NORMAL) return
+    if (state.mode !== 'normal') return
 
     let { target } = event
     let scale = getScale(target)
@@ -214,7 +214,7 @@ const MarkdownEditor: React.FC<PropType> = (props) => {
       <div className="markdown-main">
         <ToolsBar></ToolsBar>
         <main className="content-body">
-          {(state.mode === ModeType.NORMAL || state.mode === ModeType.EDIT) && (
+          {(state.mode === 'normal' || state.mode === 'edit') && (
             <textarea
               ref={editRef}
               className="md_textarea"
@@ -225,7 +225,7 @@ const MarkdownEditor: React.FC<PropType> = (props) => {
               value={value}
             />
           )}
-          {state.mode !== ModeType.EDIT && (
+          {state.mode !== 'edit' && (
             <div
               ref={showRef}
               id="write"

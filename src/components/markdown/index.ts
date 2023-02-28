@@ -4,7 +4,7 @@ import hljs from 'highlight.js'
 const md: any = new MarkdownIt({
   html: true,
   breaks: true,
-  highlight: function (code, language) {
+  highlight: (code, language) => {
     if (language && hljs.getLanguage(language)) {
       try {
         return (
@@ -23,17 +23,20 @@ const md: any = new MarkdownIt({
   .use(require('markdown-it-ins'))
   .use(require('markdown-it-mark'))
   .use(require('markdown-it-container'), 'spoiler', {
-    validate: function (params: string) {
-      return params.trim().match(/^spoiler\s+(.*)$/)
+    validate: (params) => {
+      return params.trim().match(/^spoiler\s+(.*)$/);
     },
 
-    render: function (tokens: any, idx: number) {
-      let m = tokens[idx].info.trim().match(/^spoiler\s+(.*)$/)
+    render: (tokens, idx) => {
+      let m = tokens[idx].info.trim().match(/^spoiler\s+(.*)$/);
 
       if (tokens[idx].nesting === 1) {
-        return '<details><summary>' + md.utils.escapeHtml(m[1]) + '</summary>\n'
+        // opening tag
+        return '<details><summary>' + md.utils.escapeHtml(m[1]) + '</summary>\n';
+
       } else {
-        return '</details>\n'
+        // closing tag
+        return '</details>\n';
       }
     }
   })
@@ -46,5 +49,6 @@ const md: any = new MarkdownIt({
     liClass: 'task-list-item'
   })
   .use(require('markdown-it-emoji'))
+  .use(require('markdown-it-footnote'))
 
 export default md

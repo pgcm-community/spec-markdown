@@ -1,11 +1,13 @@
 export const RETRACT: number = 4
 
-export enum ModeType {
-  NORMAL = 'normal', // 正常模式 工具栏 编辑区 预览区
-  EDIT = 'edit', // 编辑模式 工具栏 编辑区
-  PREVIEW = 'preview', // 预览模式 工具栏 预览区
-  EXHIBITION = 'exhibition', // 展示模式 预览区
-}
+
+/**
+ * 正常模式 工具栏 编辑区 预览区
+ * 编辑模式 工具栏 编辑区
+ * 预览模式 工具栏 预览区
+ * 展示模式 预览区
+ */
+export type ModeType = 'normal' | 'preview' | 'edit' | 'exhibition'
 
 export interface PropType {
   text?: string, // 文本内容
